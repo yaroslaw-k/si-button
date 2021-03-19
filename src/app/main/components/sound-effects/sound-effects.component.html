@@ -1,0 +1,20 @@
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">Звуки</div>
+  </div>
+  <div class="card-body">
+    <button class="btn btn-primary mx-1" (click)="stopAudio()">Пауза</button>
+    <button class="btn btn-primary mx-1" (click)="resume()"> Играть</button>
+    <div class="row">
+      <div class="card col-6" *ngFor="let sBlock of blocks">
+        <div class="card-title">
+          {{sBlock.title}}
+        </div>
+        <div class="">
+          <button class="btn btn-primary m-1" (click)="playSE(s)" *ngFor="let s of getBlockList(sBlock.name)">{{s.title}}</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

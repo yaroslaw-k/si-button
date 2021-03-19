@@ -1,0 +1,77 @@
+<div class="card">
+  <div class="card-body bg-dark">
+    <div class="row mr-2 px-1">
+      <div *ngFor="let team of allTeams" class="mx-4">
+        <input class="form-check-input" type="checkbox" value="" id="{{team.color + 'id'}}" [(ngModel)]="team.pat">
+        <label class="form-check-label" style="color: {{team.color}}" for="{{team.color + 'id'}}">
+          {{team.color}}
+        </label>
+      </div>
+    </div>
+    <div class="row" *ngIf="canStart()">
+      <button class="btn btn-primary m-2" (click)="startGame('chgk')">Начать чгк</button>
+      <button class="btn btn-primary m-2" (click)="startGame('si')">Начать свою игру</button>
+<!--      <button class="btn btn-primary m-2" (click)="startGame('brain')">Начать брейн ринг</button>-->
+    </div>
+  </div>
+</div>
+
+<div>фаза: {{gamePhase}}</div>
+
+
+<div *ngIf="gameType === 'chgk'">
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">
+        Чгк
+      </div>
+    </div>
+    <div class="card-body">
+      <!--      Время: {{timeToEnd}} сек <br>-->
+      Ответы:
+      <ul>
+        <li *ngFor="let ans of answers">{{ans.team}} - {{ans.answer}}</li>
+      </ul>
+      <button *ngIf="gamePhase === 'stop'" class="btn btn-primary" (click)="startRound()">Старт раунда</button>
+      <div *ngIf="gamePhase === 'waiting'">
+        <button class="btn btn-warning" (click)="stopGame()">Закончить вопрос</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="gameType === 'si'">
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">
+        Своя игра
+      </div>
+    </div>
+    <div class="card-body">
+      <div *ngIf="gamePhase === 'waiting'">
+        <button class="btn btn-warning" (click)="stopGame()">Закончить вопрос</button>
+      </div>
+      <div *ngIf="gamePhase === 'answering'">Сейчас отвечает: {{answeringTeam}}</div>
+      <div *ngIf="gamePhase === 'answering'">
+        <button class="btn btn-success mx-2" (click)="answerResult(true)">Верно</button>
+        <button class="btn btn-danger mx-2" (click)="answerResult(false)">Неправильно</button>
+      </div>
+      <button *ngIf="gamePhase === 'stop'" class="btn btn-primary" (click)="startRound()">Старт раунда</button>
+    </div>
+  </div>
+</div>
+
+<!--<div *ngIf="gameType === 'brain'">-->
+<!--  <div class="card">-->
+<!--    <div class="card-header">-->
+<!--      <div class="card-title">-->
+<!--        Брейн ринг-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--  <div class="card-body">-->
+<!--    <button class="btn btn-primary"></button>-->
+<!--  </div>-->
+<!--</div>-->
+
+<app-sound-effects></app-sound-effects>
