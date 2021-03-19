@@ -1,6 +1,15 @@
 <div class="card">
   <div class="card-body bg-dark">
-    <div class="row mr-2 px-1">
+    <div class="header-container">
+    <div *ngIf="canStart()">
+      <button class="btn btn-success m-2" (click)="startGame('chgk')">Начать «Что? Где? Когда?»</button>
+      <button class="btn btn-success m-2" (click)="startGame('si')">Начать «Своя Игра»</button>
+<!--      <button class="btn btn-primary m-2" (click)="startGame('brain')">Начать брейн ринг</button>-->
+    </div>
+    <div class="teams-container">
+      <div class="text-white mr-3">
+        <b>Команды:</b>
+      </div>
       <div *ngFor="let team of allTeams" class="mx-4">
         <input class="form-check-input" type="checkbox" value="" id="{{team.color + 'id'}}" [(ngModel)]="team.pat">
         <label class="form-check-label" style="color: {{team.color}}" for="{{team.color + 'id'}}">
@@ -8,22 +17,26 @@
         </label>
       </div>
     </div>
-    <div class="row" *ngIf="canStart()">
-      <button class="btn btn-primary m-2" (click)="startGame('chgk')">Начать чгк</button>
-      <button class="btn btn-primary m-2" (click)="startGame('si')">Начать свою игру</button>
-<!--      <button class="btn btn-primary m-2" (click)="startGame('brain')">Начать брейн ринг</button>-->
     </div>
   </div>
 </div>
 
-<div>фаза: {{gamePhase}}</div>
 
 
 <div *ngIf="gameType === 'chgk'">
   <div class="card">
-    <div class="card-header">
-      <div class="card-title">
-        Чгк
+    <div class="card-header header-container">
+      <div class="header-item">
+        <button *ngIf="gamePhase === 'stop'" class="btn btn-primary" (click)="startRound()">Старт раунда</button>
+        <div *ngIf="gamePhase === 'waiting'">
+          <button class="btn btn-warning" (click)="stopGame()">Закончить вопрос</button>
+        </div>
+      </div>
+      <div>
+        <h3><b>Что? Где? Когда?</b></h3>
+      </div>
+      <div class="header-item right">
+        фаза: {{gamePhase}}
       </div>
     </div>
     <div class="card-body">
@@ -32,31 +45,32 @@
       <ul>
         <li *ngFor="let ans of answers">{{ans.team}} - {{ans.answer}}</li>
       </ul>
-      <button *ngIf="gamePhase === 'stop'" class="btn btn-primary" (click)="startRound()">Старт раунда</button>
-      <div *ngIf="gamePhase === 'waiting'">
-        <button class="btn btn-warning" (click)="stopGame()">Закончить вопрос</button>
-      </div>
     </div>
   </div>
 </div>
 
 <div *ngIf="gameType === 'si'">
   <div class="card">
-    <div class="card-header">
-      <div class="card-title">
-        Своя игра
+    <div class="card-header header-container">
+      <div class="header-item">
+        <button *ngIf="gamePhase === 'stop'" class="btn btn-primary" (click)="startRound()">Старт раунда</button>
+        <div *ngIf="gamePhase === 'waiting'">
+          <button class="btn btn-warning" (click)="stopGame()">Закончить вопрос</button>
+        </div>
+      </div>
+      <div>
+        <h3><b>Своя Игра</b></h3>
+      </div>
+      <div class="header-item right">
+        фаза: {{gamePhase}}
       </div>
     </div>
     <div class="card-body">
-      <div *ngIf="gamePhase === 'waiting'">
-        <button class="btn btn-warning" (click)="stopGame()">Закончить вопрос</button>
-      </div>
       <div *ngIf="gamePhase === 'answering'">Сейчас отвечает: {{answeringTeam}}</div>
       <div *ngIf="gamePhase === 'answering'">
         <button class="btn btn-success mx-2" (click)="answerResult(true)">Верно</button>
         <button class="btn btn-danger mx-2" (click)="answerResult(false)">Неправильно</button>
       </div>
-      <button *ngIf="gamePhase === 'stop'" class="btn btn-primary" (click)="startRound()">Старт раунда</button>
     </div>
   </div>
 </div>
