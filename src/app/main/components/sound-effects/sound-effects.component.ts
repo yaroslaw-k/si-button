@@ -1,4 +1,5 @@
 import {Component, OnInit} from '@angular/core';
+import {AudioDispatcherService} from '../../services/audio-dispatcher.service';
 
 @Component({
   selector: 'app-sound-effects',
@@ -337,7 +338,13 @@ export class SoundEffectsComponent implements OnInit {
   ];
   private audio: HTMLAudioElement;
 
-  constructor() {
+  constructor(private ads: AudioDispatcherService) {
+    this.ads.audioEvent.subscribe(
+      a => {
+        if (!a) { return; }
+        this.playRandomSound(a);
+      }
+    );
   }
 
   ngOnInit(): void {
@@ -374,4 +381,10 @@ export class SoundEffectsComponent implements OnInit {
   }[] {
     return this.sounds.filter(s => s.block === block);
   }
+
+  playRandomSound(t: 'yes' | 'no'): void{
+    const ss = this.sounds.filter(s => s.block === t);
+    this.playSE(ss[Math.floor(Math.random()*ss.length)]);
+  }
 }
+

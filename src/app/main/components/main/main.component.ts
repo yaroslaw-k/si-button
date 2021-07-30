@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {gameType, teamColors} from '../../models/models';
 import {ApiService} from '../../services/api.service';
 import {SocketEventsService} from '../../services/socket-events.service';
+import {AudioDispatcherService} from '../../services/audio-dispatcher.service';
 
 @Component({
   selector: 'app-main',
@@ -33,7 +34,7 @@ export class MainComponent implements OnInit {
     // },
   ];
 
-  constructor(private api: ApiService, private se: SocketEventsService) {
+  constructor(private api: ApiService, private se: SocketEventsService, private ads: AudioDispatcherService) {
     this.se.socketEventsSub.subscribe((e) => {
       this.gameType = e.gameType;
       this.gamePhase = e.gamePhase;
@@ -76,6 +77,7 @@ export class MainComponent implements OnInit {
 
 
   answerResult(b: boolean): void {
+    this.ads.audioEvent.next(b? 'yes' : 'no');
     this.api.answerResult(b).toPromise().then(res => {console.log(res);});
   }
 
