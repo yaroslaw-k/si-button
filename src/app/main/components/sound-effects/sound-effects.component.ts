@@ -10,7 +10,8 @@ export class SoundEffectsComponent implements OnInit {
     block?: string,
     title: string,
     fileName: string,
-  }[] = [
+  }[] =
+    [
     {
       title: '8-bit',
       fileName: '4maps',

@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ApiService} from '../../services/api.service';
-import {gameType, teamColors} from '../../models/models';
+import {gameType, socketEvent, teamColors} from '../../models/models';
 import {SocketEventsService} from '../../services/socket-events.service';
 import {FormControl, FormGroup} from '@angular/forms';
 
@@ -20,10 +20,13 @@ export class PlayerComponent implements OnInit {
   form: FormGroup = new FormGroup({
     myAnswer: new FormControl(null)
   });
+  freeze = false;
+  freezeTime: Date;
 
 
   constructor(private api: ApiService, private se: SocketEventsService) {
     this.se.socketEventsSub.subscribe((e) => {
+      this.checkFreeze(e);
       this.gameType = e.gameType;
       this.gamePhase = e.gamePhase;
       this.answeringTeam = e.answeringTeam;
@@ -35,7 +38,7 @@ export class PlayerComponent implements OnInit {
   ngOnInit(): void {
     this.api.getState().toPromise().then(res => {
       console.log(res);
-      if (res.gameType){
+      if (res.gameType) {
         this.gameType = res.gameType;
         this.gamePhase = res.phase;
         this.teams = res.teams;
@@ -44,7 +47,7 @@ export class PlayerComponent implements OnInit {
     });
   }
 
-  selectTeam(team): void{
+  selectTeam(team): void {
     this.selectedTeam = team;
   }
 
@@ -58,10 +61,35 @@ export class PlayerComponent implements OnInit {
   }
 
   canAnswerCHGK(): boolean {
-    return this.selectedTeam && (this.gamePhase === 'waiting')  && this.answers.every(a => a.team !== this.selectedTeam);;
+    return this.selectedTeam && (this.gamePhase === 'waiting') && this.answers.every(a => a.team !== this.selectedTeam);
   }
 
   canAnswerBrain(): boolean {
     return this.selectedTeam && (this.gamePhase === 'waiting');
+  }
+
+  private checkFreeze(e: socketEvent): void {
+    if (this.gamePhase === 'answering' &&
+      e.gamePhase === 'waiting' &&
+      this.answeringTeam === this.selectedTeam
+    ) {
+      this.freezeTime = new Date();
+      this.freeze = true;
+      this.waitFreeze();
+    }
+  }
+
+  waitFreeze(): void{
+    const ct = new Date();
+    if ((+ct - +this.freezeTime) >= 7000){
+      this.freeze = false;
+      return;
+    }
+    setTimeout(this.waitFreeze.bind(this), 100);
+  }
+
+  getFreezeEnd(): string| number {
+    const ct = new Date();
+    return ((7000 - (+ct - +this.freezeTime))/1000).toFixed(1);
   }
 }

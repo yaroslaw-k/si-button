@@ -22,14 +22,18 @@
     </div>
     <div *ngIf="gameType === 'si'">
       <div class="select-team-but" style="background-color:{{selectedTeam}};">{{selectedTeam}}</div>
-      <button *ngIf="canAnswerSI()" class="btn btn-danger answer-but" (click)="makeAnswer()">ЖМИ</button>
+      <button *ngIf="canAnswerSI()"
+              class="btn btn-danger answer-but"
+              (click)="makeAnswer()"
+              [disabled]="freeze"
+      > <span *ngIf="!freeze">ЖМИ</span> <span *ngIf="freeze">{{getFreezeEnd()}}</span></button>
     </div>
     <div *ngIf="gameType === 'chgk'">
       <div class="select-team-but" style="background-color:{{selectedTeam}};">{{selectedTeam}}</div>
       <form  *ngIf="canAnswerSI()" [formGroup]="form">
         <div class="form-group" >
           <input class="form-control m-2" [formControlName]="'myAnswer'" type="text" placeholder="введите ответ">
-          <button class="btn btn-danger m-1 w-100" (click)="makeAnswer()">Отправит ответ</button>
+          <button class="btn btn-danger m-1 w-100" (click)="makeAnswer()">Отправить ответ</button>
         </div>
       </form>
     </div>
